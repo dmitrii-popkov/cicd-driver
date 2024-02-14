@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>ru.infotecs.cicd</groupId>
+  <artifactId>cicd-driver</artifactId>
+  <versioning>
+    <versions>
+      <version>1.0.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20240214090238</lastUpdated>
+  </versioning>
+</metadata>
