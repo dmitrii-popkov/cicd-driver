@@ -17,10 +17,24 @@
     <org.projectlombok.version>1.18.28</org.projectlombok.version>
     <junit-jupiter.version>5.10.1</junit-jupiter.version>
     <github.global.server>github</github.global.server>
-    <github.maven-plugin>0.9</github.maven-plugin>
+    <github.maven-plugin>0.12</github.maven-plugin>
   </properties>
 
 <!--  todo repository, repositoryManagement, formatter, jacoco, javadoc, gitflow-->
+
+  <repositories>
+    <repository>
+      <id>infotecs.public</id>
+      <url>https://artifactory.infotecs.ru/artifactory/r652-tias-maven</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>infotecs.public</id>
+      <url>https://artifactory.infotecs.ru/artifactory/r652-tias-maven</url>
+    </pluginRepository>
+  </pluginRepositories>
 
   <distributionManagement>
     <repository>
@@ -44,6 +58,12 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>${org.projectlombok.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.7</version>
     </dependency>
 
     <!--		Test dependencies-->
