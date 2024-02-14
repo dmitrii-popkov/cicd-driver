@@ -7,6 +7,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
@@ -17,7 +18,7 @@ public class MqttConnectorImpl implements MqttConnector {
 	private final IMqttClient client;
 
 	public MqttConnectorImpl(String url, Supplier<String> idGenerator) throws MqttException {
-		this.client = new MqttClient(url, idGenerator.get());
+		this.client = new MqttClient(url, idGenerator.get(), new MemoryPersistence());
 		MqttConnectOptions options = new MqttConnectOptions();
 		options.setAutomaticReconnect(true);
 		options.setCleanSession(true);
