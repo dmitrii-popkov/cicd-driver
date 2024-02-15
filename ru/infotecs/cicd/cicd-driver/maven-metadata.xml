@@ -3,9 +3,10 @@
   <groupId>ru.infotecs.cicd</groupId>
   <artifactId>cicd-driver</artifactId>
   <versioning>
+    <release>0.0.4</release>
     <versions>
-      <version>0.0.4-SNAPSHOT</version>
+      <version>0.0.4</version>
     </versions>
-    <lastUpdated>20240215214531</lastUpdated>
+    <lastUpdated>20240215214635</lastUpdated>
   </versioning>
 </metadata>
