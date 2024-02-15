@@ -22,6 +22,12 @@
 
 <!--  todo repository, repositoryManagement, formatter, jacoco, javadoc, gitflow-->
 
+  <scm>
+    <developerConnection>scm:git:https://github.com/dmitrii-popkov/cicd-driver
+    </developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
   <repositories>
     <repository>
       <id>infotecs.public</id>
@@ -143,6 +149,20 @@
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <groupId>com.amashchenko.maven.plugin</groupId>
+          <artifactId>gitflow-maven-plugin</artifactId>
+          <version>1.19.0</version>
+          <configuration>
+            <gitFlowConfig>
+              <productionBranch>main</productionBranch>
+            </gitFlowConfig>
+
+            <commitMessages>
+              <!-- since 1.2.1, see Customizing commit messages -->
+            </commitMessages>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>com.github.github</groupId>
