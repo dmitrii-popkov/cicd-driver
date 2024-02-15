@@ -23,7 +23,7 @@
 <!--  todo repository, repositoryManagement, formatter, jacoco, javadoc, gitflow-->
 
   <scm>
-    <developerConnection>scm:git:https://github.com/dmitrii-popkov/cicd-driver
+    <developerConnection>scm:git@github.com:dmitrii-popkov/cicd-driver.git
     </developerConnection>
     <tag>HEAD</tag>
   </scm>
