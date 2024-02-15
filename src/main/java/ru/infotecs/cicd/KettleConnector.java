@@ -8,7 +8,7 @@ public interface KettleConnector extends AutoCloseable {
 
 	void stopListening() throws KettleInternalException;
 
-	Collection<String> getAvailableIds();
+	Collection<KettleState> getAvailable();
 
 	void turnOn(String id) throws KettleInternalException;
 

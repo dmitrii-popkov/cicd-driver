@@ -1,8 +1,9 @@
 package ru.infotecs.cicd;
 
-import org.eclipse.paho.client.mqttv3.MqttException;
-
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -30,11 +31,43 @@ public class KettleConnectorImpl implements KettleConnector {
 				String[] topicParts = topic.split("/");
 				String kettleId = topicParts[1] + topicParts[2];
 				// TODO: 14.02.2024 add sub to state
-				knownKettles.putIfAbsent(kettleId, KettleState.ACTIVE);
+				knownKettles.putIfAbsent(kettleId,
+						createKettleState(kettleId, ConnectedState.ACTIVE, 0, SwitchMode.OFF));
+			}));
+			mqttConnector.subscribe("polaris/+/+/state/mode", ((topic, message) -> {
+				String[] topicParts = topic.split("/");
+				String kettleId = topicParts[1] + topicParts[2];
+				Optional<SwitchMode> mode = SwitchMode.valueOfKey(
+						new String(message.getPayload(), StandardCharsets.UTF_8));
+
+				knownKettles.computeIfPresent(kettleId,
+						(key, state) -> createKettleState(kettleId, state.connectedState(), state.temperature(),
+								mode.orElse(state.switchMode())));
+			}));
+			mqttConnector.subscribe("polaris/+/+/state/sensor/temperature", ((topic, message) -> {
+				String[] topicParts = topic.split("/");
+				String kettleId = topicParts[1] + topicParts[2];
+
+				knownKettles.computeIfPresent(kettleId,
+						(key, state) -> {
+							int temperature = 0;
+							String temperatureRaw = new String(message.getPayload(), StandardCharsets.UTF_8);
+							String[] temperatureTokens = temperatureRaw.split("\\.");
+							if (temperatureTokens.length >= 1) {
+								temperature = Integer.parseInt(temperatureTokens[0]);
+							}
+							return createKettleState(kettleId, state.connectedState(), temperature,
+									state.switchMode());
+						});
 			}));
 		} catch (RuntimeException e) {
 			throw new KettleInternalException(e);
 		}
+	}
+
+	private KettleState createKettleState(String id, ConnectedState connectedState, int temperature,
+			SwitchMode switchMode) {
+		return new KettleState(id, connectedState, temperature, switchMode);
 	}
 
 	@Override
@@ -52,8 +85,9 @@ public class KettleConnectorImpl implements KettleConnector {
 	}
 
 	@Override
-	public Collection<String> getAvailableIds() {
-		return knownKettles.keySet(KettleState.ACTIVE).stream().toList();
+	public Collection<KettleState> getAvailable() {
+		return knownKettles.searchValues(10,
+				kettleState -> kettleState.connectedState() == ConnectedState.ACTIVE ? List.of(kettleState) : null);
 	}
 
 	@Override

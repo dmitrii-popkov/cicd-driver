@@ -1,5 +1,4 @@
 package ru.infotecs.cicd;
 
-public enum KettleState {
-	ACTIVE, ERROR
+public record KettleState(String id, ConnectedState connectedState, int temperature, SwitchMode switchMode) {
 }
