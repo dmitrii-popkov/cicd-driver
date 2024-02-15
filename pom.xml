@@ -6,7 +6,7 @@
 
   <groupId>ru.infotecs.cicd</groupId>
   <artifactId>cicd-driver</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <name>cicd-driver</name>
 
@@ -23,7 +23,7 @@
 <!--  todo repository, repositoryManagement, formatter, jacoco, javadoc, gitflow-->
 
   <scm>
-    <developerConnection>scm:git@github.com:dmitrii-popkov/cicd-driver.git
+    <developerConnection>scm:git:https://github.com/dmitrii-popkov/cicd-driver
     </developerConnection>
     <tag>HEAD</tag>
   </scm>
