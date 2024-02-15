@@ -14,6 +14,8 @@ public interface KettleConnector extends AutoCloseable {
 
 	void turnOff(String id) throws KettleInternalException;
 
+	void heat(String id, int temperature) throws KettleInternalException;
+
 	void close() throws ConnectionNotClosedException;
 
 	static KettleConnector create(String url) {
