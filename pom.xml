@@ -6,7 +6,7 @@
 
   <groupId>ru.infotecs.cicd</groupId>
   <artifactId>cicd-driver</artifactId>
-  <version>0.2.1-SNAPSHOT</version>
+  <version>0.4.1-SNAPSHOT</version>
 
   <name>cicd-driver</name>
 
@@ -33,6 +33,13 @@
       <id>infotecs.public</id>
       <url>https://artifactory.infotecs.ru/artifactory/r652-tias-maven</url>
     </repository>
+    <repository>
+      <id>github</id>
+      <url>https://maven.pkg.github.com/dmitrii-popkov/cicd-driver</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
   <pluginRepositories>
@@ -44,9 +51,9 @@
 
   <distributionManagement>
     <repository>
-      <id>internal.repo</id>
-      <name>Temporary Staging Repository</name>
-      <url>file://${project.build.directory}/mvn-repo</url>
+      <id>github</id>
+      <name>GitHub OWNER Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/dmitrii-popkov/cicd-driver</url>
     </repository>
   </distributionManagement>
 
@@ -159,32 +166,7 @@
               <productionBranch>main</productionBranch>
             </gitFlowConfig>
 
-            <commitMessages>
-              <!-- since 1.2.1, see Customizing commit messages -->
-            </commitMessages>
           </configuration>
-        </plugin>
-        <plugin>
-          <groupId>com.github.github</groupId>
-          <artifactId>site-maven-plugin</artifactId>
-          <version>${github.maven-plugin}</version>
-          <configuration>
-            <message>Maven artifacts for ${project.version}</message>
-            <noJekyll>true</noJekyll>
-            <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
-            <branch>refs/heads/mvn-repo</branch>
-            <includes><include>**/*</include></includes>
-            <repositoryName>cicd-driver</repositoryName>
-            <repositoryOwner>dmitrii-popkov</repositoryOwner>
-          </configuration>
-          <executions>
-            <execution>
-              <goals>
-                <goal>site</goal>
-              </goals>
-              <phase>deploy</phase>
-            </execution>
-          </executions>
         </plugin>
       </plugins>
   </build>
