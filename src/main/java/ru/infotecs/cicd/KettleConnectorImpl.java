@@ -117,6 +117,20 @@ public class KettleConnectorImpl implements KettleConnector {
 	}
 
 	@Override
+	public void heat(String id, int temperature) throws KettleInternalException {
+		MqttConnector mqttConnector = mqttStorage.get();
+		if (mqttConnector == null) {
+			throw new KettleInternalException("Broker connection not established");
+		}
+		try {
+			mqttConnector.publish("polaris/%s/%s/control/mode".formatted(id.substring(0, 2), id.substring(2)), "3");
+			mqttConnector.publish("polaris/%s/%s/control/temperature".formatted(id.substring(0, 2), id.substring(2)), String.valueOf(temperature));
+		} catch (RuntimeException e) {
+			throw new KettleInternalException(e);
+		}
+	}
+
+	@Override
 	public void close() throws ConnectionNotClosedException {
 		try (MqttConnector mqttConnector = mqttStorage.get()) {
 			// TODO: 13.02.2024 logger info
