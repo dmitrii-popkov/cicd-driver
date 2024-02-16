@@ -6,7 +6,7 @@
 
   <groupId>ru.infotecs.cicd</groupId>
   <artifactId>cicd-driver</artifactId>
-  <version>0.6.4</version>
+  <version>0.6.5-SNAPSHOT</version>
 
   <name>cicd-driver</name>
 
