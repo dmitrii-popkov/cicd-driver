@@ -32,33 +32,33 @@ public class KettleConnectorImpl implements KettleConnector {
 				String kettleId = topicParts[1] + topicParts[2];
 				// TODO: 14.02.2024 add sub to state
 				knownKettles.putIfAbsent(kettleId,
-						createKettleState(kettleId, ConnectedState.ACTIVE, 0, SwitchMode.OFF));
+					createKettleState(kettleId, ConnectedState.ACTIVE, 0, SwitchMode.OFF));
 			}));
 			mqttConnector.subscribe("polaris/+/+/state/mode", ((topic, message) -> {
 				String[] topicParts = topic.split("/");
 				String kettleId = topicParts[1] + topicParts[2];
 				Optional<SwitchMode> mode = SwitchMode.valueOfKey(
-						new String(message.getPayload(), StandardCharsets.UTF_8));
+					new String(message.getPayload(), StandardCharsets.UTF_8));
 
 				knownKettles.computeIfPresent(kettleId,
-						(key, state) -> createKettleState(kettleId, state.connectedState(), state.temperature(),
-								mode.orElse(state.switchMode())));
+					(key, state) -> createKettleState(kettleId, state.connectedState(), state.temperature(),
+						mode.orElse(state.switchMode())));
 			}));
 			mqttConnector.subscribe("polaris/+/+/state/sensor/temperature", ((topic, message) -> {
 				String[] topicParts = topic.split("/");
 				String kettleId = topicParts[1] + topicParts[2];
 
 				knownKettles.computeIfPresent(kettleId,
-						(key, state) -> {
-							int temperature = 0;
-							String temperatureRaw = new String(message.getPayload(), StandardCharsets.UTF_8);
-							String[] temperatureTokens = temperatureRaw.split("\\.");
-							if (temperatureTokens.length >= 1) {
-								temperature = Integer.parseInt(temperatureTokens[0]);
-							}
-							return createKettleState(kettleId, state.connectedState(), temperature,
-									state.switchMode());
-						});
+					(key, state) -> {
+						int temperature = 0;
+						String temperatureRaw = new String(message.getPayload(), StandardCharsets.UTF_8);
+						String[] temperatureTokens = temperatureRaw.split("\\.");
+						if (temperatureTokens.length >= 1) {
+							temperature = Integer.parseInt(temperatureTokens[0]);
+						}
+						return createKettleState(kettleId, state.connectedState(), temperature,
+							state.switchMode());
+					});
 			}));
 		} catch (RuntimeException e) {
 			throw new KettleInternalException(e);
@@ -66,7 +66,7 @@ public class KettleConnectorImpl implements KettleConnector {
 	}
 
 	private KettleState createKettleState(String id, ConnectedState connectedState, int temperature,
-			SwitchMode switchMode) {
+										  SwitchMode switchMode) {
 		return new KettleState(id, connectedState, temperature, switchMode);
 	}
 
@@ -87,7 +87,7 @@ public class KettleConnectorImpl implements KettleConnector {
 	@Override
 	public Collection<KettleState> getAvailable() {
 		return knownKettles.searchValues(10,
-				kettleState -> kettleState.connectedState() == ConnectedState.ACTIVE ? List.of(kettleState) : null);
+			kettleState -> kettleState.connectedState() == ConnectedState.ACTIVE ? List.of(kettleState) : null);
 	}
 
 	@Override
@@ -111,6 +111,20 @@ public class KettleConnectorImpl implements KettleConnector {
 		}
 		try {
 			mqttConnector.publish("polaris/%s/%s/control/mode".formatted(id.substring(0, 2), id.substring(2)), "0");
+		} catch (RuntimeException e) {
+			throw new KettleInternalException(e);
+		}
+	}
+
+	@Override
+	public void heat(String id, int temperature) throws KettleInternalException {
+		MqttConnector mqttConnector = mqttStorage.get();
+		if (mqttConnector == null) {
+			throw new KettleInternalException("Broker connection not established");
+		}
+		try {
+			mqttConnector.publish("polaris/%s/%s/control/mode".formatted(id.substring(0, 2), id.substring(2)), "3");
+			mqttConnector.publish("polaris/%s/%s/control/temperature".formatted(id.substring(0, 2), id.substring(2)), String.valueOf(temperature));
 		} catch (RuntimeException e) {
 			throw new KettleInternalException(e);
 		}
